@@ -1195,6 +1195,7 @@ pub mod ffi {
       quality: f32,
       lossless: bool,
       crop_to_max_dimension: bool,
+      unpremul_readback: bool,
     );
 
     pub fn skiac_image_read_pixels(
@@ -5981,13 +5982,15 @@ impl SkImage {
 
   /// Encode the image into the given format (JPEG/PNG/WebP; quality is
   /// ignored for PNG, and for a lossless WebP). `crop_to_max_dimension`:
-  /// encode the top-left part the encoder can hold.
+  /// encode the top-left part the encoder can hold. `unpremul_readback`:
+  /// encode toDataURL's unpremultiplied readback of a float16 image.
   pub fn encode_data(
     &self,
     format: SkEncodedImageFormat,
     quality: f32,
     lossless: bool,
     crop_to_max_dimension: bool,
+    unpremul_readback: bool,
   ) -> Option<SkiaDataRef> {
     unsafe {
       let mut data = ffi::skiac_sk_data {
@@ -6002,6 +6005,7 @@ impl SkImage {
         quality,
         lossless,
         crop_to_max_dimension,
+        unpremul_readback,
       );
 
       if data.ptr.is_null() {
